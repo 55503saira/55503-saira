@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Service 1: Custom Python Web Application
+  web:
+    build: .
+    image: saira55503/web-app:latest
+    ports:
+      - "8003:5000"  # Map host port ending in '03' to container port 5000
+    environment:
+      - REDIS_HOST=redis_db  # Environment variable passed to app
+    networks:
+      - custom_net
+    depends_on:
+      - redis_db
+
+  # Service 2: Pre-pulled Redis Database
+  redis_db:
+    image: redis:alpine
+    networks:
+      - custom_net
+    volumes:
+      - redis_data:/data  # Named volume for data persistence
+
+networks:
+  custom_net:
+    driver: bridge
+
+volumes:
+  redis_data:
